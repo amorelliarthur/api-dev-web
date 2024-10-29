@@ -1,16 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { CoinService } from "./coin.service";
 import { Coin } from "./schemas/coin.schema";
 import { CreateCoinDto } from "./dto/create-coin.dto";
 import { UpdateCoinDto } from "./dto/update-coin.dto";
+import { Query as ExpressQuery } from 'express-serve-static-core';
 
 @Controller('coins')
 export class CoinController {
     constructor(private coinService: CoinService) {}
 
     @Get()
-    async getAllCoins(): Promise<Coin[]> {
-        return this.coinService.findAll();
+    async getAllCoins(@Query() query: ExpressQuery): Promise<Coin[]> {
+        return this.coinService.findAll(query);
     }
 
     @Post()

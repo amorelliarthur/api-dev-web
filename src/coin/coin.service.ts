@@ -3,6 +3,9 @@ import { InjectModel } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
 import { Coin } from './schemas/coin.schema';
 
+import { Query } from 'express-serve-static-core';
+
+
 @Injectable()
 export class CoinService {
     constructor(
@@ -10,8 +13,23 @@ export class CoinService {
         private coinModel: mongoose.Model<Coin>,
     ){}
 
-    async findAll(): Promise<Coin[]> {
-        const coins = await this.coinModel.find();
+    async findAll(query: Query): Promise<Coin[]> {
+
+        const resPerPage = 2
+        const currentPage = Number(query.page) || 1
+        const skip = resPerPage * (currentPage - 1)
+
+        //console.log(query)
+        const keyword = query.keyword
+         ? {
+                code: {
+                    $regex: query.keyword,
+                    $options: 'i',
+                }, 
+            }
+         : {};
+
+        const coins = await this.coinModel.find({...keyword}).limit(resPerPage).skip(skip)
         return coins;
     }
 
