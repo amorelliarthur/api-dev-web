@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
 import { Coin } from './schemas/coin.schema';
@@ -29,7 +29,10 @@ export class CoinService {
             }
          : {};
 
-        const coins = await this.coinModel.find({...keyword}).limit(resPerPage).skip(skip)
+        const coins = await this.coinModel
+            .find({...keyword})
+            .limit(resPerPage)
+            .skip(skip)
         return coins;
     }
 
@@ -39,6 +42,13 @@ export class CoinService {
     }
 
     async findById(id: string): Promise<Coin>{
+
+        const isValidId = mongoose.isValidObjectId(id)
+
+        if(!isValidId) {
+            throw new BadRequestException('Id inválido.')
+        }
+
         const coin = await this.coinModel.findById(id);
 
         if(!coin) {
