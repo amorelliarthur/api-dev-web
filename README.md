@@ -98,4 +98,18 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
+### MongoDb
 npm i mongoose @nestjs/mongoose @nestjs/config --save
+
+### Pipe
+npm i --save class-validator class-transformer
+
+### Auth
+npm install --save @nestjs/passport passport passport-local
+npm install --save-dev @types/passport-local
+
+### JWT
+npm i @nestjs/jwt --save
+
+### bcrpt
+npm i bcryptjs --save
