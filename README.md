@@ -113,3 +113,6 @@ npm i @nestjs/jwt --save
 
 ### bcrpt
 npm i bcryptjs --save
+
+### passposrt jwt
+npm i passport-jwt --save

@@ -4,6 +4,7 @@ import * as mongoose from "mongoose";
 import { Coin } from './schemas/coin.schema';
 
 import { Query } from 'express-serve-static-core';
+import { User } from "../auth/schemas/user.schema";
 
 
 @Injectable()
@@ -15,9 +16,9 @@ export class CoinService {
 
     async findAll(query: Query): Promise<Coin[]> {
 
-        const resPerPage = 2
-        const currentPage = Number(query.page) || 1
-        const skip = resPerPage * (currentPage - 1)
+        // const resPerPage = 2
+        // const currentPage = Number(query.page) || 1
+        // const skip = resPerPage * (currentPage - 1)
 
         //console.log(query)
         const keyword = query.keyword
@@ -31,13 +32,14 @@ export class CoinService {
 
         const coins = await this.coinModel
             .find({...keyword})
-            .limit(resPerPage)
-            .skip(skip)
+            // .limit(resPerPage)
+            // .skip(skip)
         return coins;
     }
 
-    async create(coin: Coin): Promise<Coin>{
-        const res = await this.coinModel.create(coin);
+    async create(coin: Coin, user: User): Promise<Coin>{
+        const data = Object.assign(coin, {user: user._id})
+        const res = await this.coinModel.create(data);
         return res;
     }
 
@@ -57,6 +59,50 @@ export class CoinService {
 
         return coin;
     }
+
+    // coin.service.ts
+
+// Nova função para buscar moedas por codigo user
+async findAllByUser(user: string, query: Query): Promise<Coin[]> {
+    
+    const keyword = query.keyword
+        ? {
+            code: {
+                $regex: query.keyword,
+                $options: 'i',
+            },
+        }
+        : {};
+
+    const coins = await this.coinModel
+        .find({ user: user, ...keyword }) // Filtra pelo userId e pelo keyword, se houver
+                
+    return coins;
+}
+
+// No coin.service.ts
+async findAllByUserEmail(email: string, query: Query): Promise<Coin[]> {
+    const keyword = query.keyword
+        ? {
+            code: {
+                $regex: query.keyword,
+                $options: 'i',
+            },
+        }
+        : {};
+
+    const coins = await this.coinModel
+        .find({ ...keyword })
+        .populate({
+            path: 'user', // Popula o documento do usuário
+            match: { email: email }, // Filtra apenas os usuários com o email especificado
+        });
+
+    // Filtra apenas os documentos onde `user` não é `null` após a filtragem por email
+    return coins.filter(coin => coin.user !== null);
+}
+
+
 
     async updateById(id: string, coin: Coin): Promise<Coin>{
         return await this.coinModel.findByIdAndUpdate(id, coin, {
