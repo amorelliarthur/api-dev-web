@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { CoinService } from "./coin.service";
 import { Coin } from "./schemas/coin.schema";
 import { CreateCoinDto } from "./dto/create-coin.dto";
@@ -34,24 +34,21 @@ export class CoinController {
         return this.coinService.findById(id);
     }
 
-    // Nova rota para buscar moedas pelo ID do usuário
+    // Nova rota para buscar moedas pelo ID do usuário http://localhost:3000/coins/user/672277729b6127616b55252a
     @Get('user/:user')
     async getAllCoinsByUser(
-        @Param('user') user: string,
-        @Query() query: ExpressQuery
+        @Param('user') user: string
     ): Promise<Coin[]> {
-        return this.coinService.findAllByUser(user, query);
+        return this.coinService.findAllByUser(user);
     }
 
-    //pesquisa por email
+    //pesquisa por email http://localhost:3000/coins/user/email/arthur@teste.br
     @Get('user/email/:email')
     async getAllCoinsByUserEmail(
-        @Param('email') email: string,
-        @Query() query: ExpressQuery
+        @Param('email') email: string
     ): Promise<Coin[]> {
-        return this.coinService.findAllByUserEmail(email, query);
+        return this.coinService.findAllByUserEmail(email);
     }
-
 
     @Put(':id')
     async updateCoin(
@@ -63,11 +60,34 @@ export class CoinController {
         return this.coinService.updateById(id, coin);
     }
 
-    @Delete(':id')
+    // @Delete(':id')
+    // async deleteCoin(
+    //     @Param('id')
+    //     id:string,
+    // ): Promise<Coin> {
+    //     return this.coinService.deleteById(id);
+    // }
+    
+    // @Delete(':id')
+    // @UseGuards(AuthGuard())
+    // async deleteCoin(
+    //     @Param('id') id: string,
+    //     @Req() req
+    // ): Promise<Coin> {
+    //     return this.coinService.deleteById(id, req.user);
+    // }
+
+    @Delete(':userId/:code')
+    @UseGuards(AuthGuard())
     async deleteCoin(
-        @Param('id')
-        id:string,
+        @Param('userId') userId: string,
+        @Param('code') code: string,
+        @Req() req
     ): Promise<Coin> {
-        return this.coinService.deleteById(id);
+        // Verifica se o ID do usuário logado corresponde ao ID passado
+        if (req.user._id.toString() !== userId) {
+            throw new UnauthorizedException('Você não tem permissão para deletar esta moeda.');
+        }
+        return this.coinService.deleteByCodeAndUser(code, userId);
     }
 }

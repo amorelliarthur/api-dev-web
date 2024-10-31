@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as mongoose from "mongoose";
 import { Coin } from './schemas/coin.schema';
@@ -43,66 +43,37 @@ export class CoinService {
         return res;
     }
 
+    // buscar moedas por id da moeda
     async findById(id: string): Promise<Coin>{
-
         const isValidId = mongoose.isValidObjectId(id)
-
         if(!isValidId) {
             throw new BadRequestException('Id inválido.')
         }
 
         const coin = await this.coinModel.findById(id);
-
         if(!coin) {
             throw new NotFoundException('Moeda não encontrada.')
         }
-
         return coin;
     }
 
-    // coin.service.ts
+    // buscar moedas por código do user
+    async findAllByUser(user: string): Promise<Coin[]> {
+        const coins = await this.coinModel.find({ user: user });
+        return coins;
+    }
 
-// Nova função para buscar moedas por codigo user
-async findAllByUser(user: string, query: Query): Promise<Coin[]> {
-    
-    const keyword = query.keyword
-        ? {
-            code: {
-                $regex: query.keyword,
-                $options: 'i',
-            },
-        }
-        : {};
+    // buscar moedas pelo email do user
+    async findAllByUserEmail(email: string): Promise<Coin[]> {
+        const coins = await this.coinModel
+            .find()
+            .populate({
+                path: 'user',  
+                match: { email: email },
+            });
 
-    const coins = await this.coinModel
-        .find({ user: user, ...keyword }) // Filtra pelo userId e pelo keyword, se houver
-                
-    return coins;
-}
-
-// No coin.service.ts
-async findAllByUserEmail(email: string, query: Query): Promise<Coin[]> {
-    const keyword = query.keyword
-        ? {
-            code: {
-                $regex: query.keyword,
-                $options: 'i',
-            },
-        }
-        : {};
-
-    const coins = await this.coinModel
-        .find({ ...keyword })
-        .populate({
-            path: 'user', // Popula o documento do usuário
-            match: { email: email }, // Filtra apenas os usuários com o email especificado
-        });
-
-    // Filtra apenas os documentos onde `user` não é `null` após a filtragem por email
-    return coins.filter(coin => coin.user !== null);
-}
-
-
+        return coins.filter(coin => coin.user !== null); // Filtra moedas com campo `user` preenchido
+    }
 
     async updateById(id: string, coin: Coin): Promise<Coin>{
         return await this.coinModel.findByIdAndUpdate(id, coin, {
@@ -111,7 +82,30 @@ async findAllByUserEmail(email: string, query: Query): Promise<Coin[]> {
         });
     }
 
-    async deleteById(id: string): Promise<Coin>{
-        return await this.coinModel.findByIdAndDelete(id);
+    // async deleteById(id: string): Promise<Coin>{
+    //     return await this.coinModel.findByIdAndDelete(id);
+    // }
+    
+    // async deleteById(id: string, user: User): Promise<Coin> {
+    //     const coin = await this.coinModel.findById(id);
+    //     if (!coin) {
+    //         throw new NotFoundException('Moeda não encontrada.');
+    //     }
+    //     // Verifica se o usuário logado é o criador da moeda
+    //     if (coin.user.toString() !== user._id.toString()) {
+    //         throw new UnauthorizedException('Você não tem permissão para deletar esta moeda.');
+    //     }
+    //     return await this.coinModel.findByIdAndDelete(id);
+    // }
+
+    async deleteByCodeAndUser(code: string, userId: string): Promise<Coin> {
+        // Procura a moeda pelo nome e pelo usuário associado
+        const coin = await this.coinModel.findOne({ code: code, user: userId });
+    
+        if (!coin) {
+            throw new NotFoundException('Moeda não encontrada.');
+        }
+    
+        return await this.coinModel.findByIdAndDelete(coin._id);
     }
 }
