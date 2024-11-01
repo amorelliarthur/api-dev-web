@@ -32,7 +32,7 @@ export class AuthService {
     return { token };
   }
 
-  async login(loginDto: LoginDto): Promise<{ token: string; userId: string; email: string  }> {
+  async login(loginDto: LoginDto): Promise<{ token: string; userId: string; email: string, name: string  }> {
     const { email, password } = loginDto;
 
     const user = await this.userModel.findOne({ email });
@@ -49,7 +49,7 @@ export class AuthService {
 
     const token = this.jwtService.sign({id: user._id});
 
-    return { token, userId: user._id.toString(), email: user.email  };
+    return { token, userId: user._id.toString(), email: user.email, name: user.name  };
 
   }
 }
