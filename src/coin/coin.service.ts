@@ -82,22 +82,6 @@ export class CoinService {
         });
     }
 
-    // async deleteById(id: string): Promise<Coin>{
-    //     return await this.coinModel.findByIdAndDelete(id);
-    // }
-    
-    // async deleteById(id: string, user: User): Promise<Coin> {
-    //     const coin = await this.coinModel.findById(id);
-    //     if (!coin) {
-    //         throw new NotFoundException('Moeda não encontrada.');
-    //     }
-    //     // Verifica se o usuário logado é o criador da moeda
-    //     if (coin.user.toString() !== user._id.toString()) {
-    //         throw new UnauthorizedException('Você não tem permissão para deletar esta moeda.');
-    //     }
-    //     return await this.coinModel.findByIdAndDelete(id);
-    // }
-
     async deleteByCodeAndUser(code: string, userId: string): Promise<Coin> {
         // Procura a moeda pelo nome e pelo usuário associado
         const coin = await this.coinModel.findOne({ code: code, user: userId });

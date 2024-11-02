@@ -1,0 +1,536 @@
+{
+	"openapi": "3.0.0",
+	"paths": {
+		"/coins": {
+			"/coins": {
+				"get": {
+					"operationId": "CoinController_getAllCoins",
+					"parameters": [],
+					"responses": {
+						"200": {
+							"description": "Lista de todas as moedas associadas a usuários",
+							"content": {
+								"application/json": {
+									"example": [
+										{
+											"_id": "6722ea56adfb5ca2993f7045",
+											"code": "BTC",
+											"name": "BTC/Real Brasileiro",
+											"user": "672277729b6127616b55252a",
+											"createdAt": "2024-10-31T02:24:22.164Z",
+											"updatedAt": "2024-10-31T02:24:22.164Z",
+											"__v": 0
+										},
+										{
+											"_id": "6722ea91adfb5ca2993f7049",
+											"code": "BTC",
+											"name": "BTC/Real Brasileiro",
+											"user": "67222ae202d81bb03c2f6014",
+											"createdAt": "2024-10-31T02:25:21.835Z",
+											"updatedAt": "2024-10-31T02:25:21.835Z",
+											"__v": 0
+										},
+										{
+											"_id": "6722eaa9adfb5ca2993f704c",
+											"code": "ETH",
+											"name": "ETH/Real Brasileiro",
+											"user": "67222ae202d81bb03c2f6014",
+											"createdAt": "2024-10-31T02:25:45.563Z",
+											"updatedAt": "2024-10-31T02:25:45.563Z",
+											"__v": 0
+										},
+										{
+											"_id": "67253e429247c8e903787f54",
+											"code": "ETH",
+											"name": "ETH/Real Brasileiro",
+											"user": "67222ae202d81bb03c2f6014",
+											"createdAt": "2024-11-01T20:46:58.634Z",
+											"updatedAt": "2024-11-01T20:46:58.634Z",
+											"__v": 0
+										},
+										{
+											"_id": "67263f0ec053f58bd2062469",
+											"code": "XRPBRL",
+											"name": "XRP/Real Brasileiro",
+											"user": "67240bb518bc7d05a496db07",
+											"createdAt": "2024-11-02T15:02:38.120Z",
+											"updatedAt": "2024-11-02T15:02:38.120Z",
+											"__v": 0
+										},
+										{
+											"_id": "672642fbc053f58bd206247b",
+											"code": "GBPBRL",
+											"name": "Libra Esterlina/Real Brasileiro",
+											"user": "67263eecc053f58bd206245a",
+											"createdAt": "2024-11-02T15:19:23.400Z",
+											"updatedAt": "2024-11-02T15:19:23.400Z",
+											"__v": 0
+										}
+									]
+								}
+							}
+						}
+					},
+					"tags": [
+						"Coin"
+					]
+				}
+			},
+			"post": {
+				"operationId": "CoinController_createCoin",
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjIyYWUyMDJkODFiYjAzYzJmNjAxNCIsImlhdCI6MTczMDM0MTQ0NywiZXhwIjoxNzMwNjAwNjQ3fQ.5LWjzqVt0kNkdBhRgoCkMz0pgIjNufUcMCqeFwm9Luo"
+						},
+						"description": "Bearer token de autenticação do usuário"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCoinDto"
+							},
+							"example": {
+								"code": "EUR",
+								"name": "EUR/Real Brasileiro"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Moeda criada com sucesso",
+						"content": {
+							"application/json": {
+								"example": {
+									"code": "EUR",
+									"name": "EUR/Real Brasileiro",
+									"user": "67222ae202d81bb03c2f6014",
+									"_id": "6726670c435d4e8cd74622ba",
+									"createdAt": "2024-11-02T17:53:16.044Z",
+									"updatedAt": "2024-11-02T17:53:16.044Z",
+									"__v": 0
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Coin"
+				]
+			}
+		},
+		"/coins/{id}": {
+			"get": {
+				"operationId": "CoinController_getCoin",
+				"parameters": [
+					{
+						"name": "id",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string",
+							"example": "6722ea56adfb5ca2993f7045"
+						},
+						"description": "ID da moeda a ser recuperada"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Moeda recuperada com sucesso",
+						"content": {
+							"application/json": {
+								"example": {
+									"_id": "6722ea56adfb5ca2993f7045",
+									"code": "BTC",
+									"name": "BTC/Real Brasileiro",
+									"user": "672277729b6127616b55252a",
+									"createdAt": "2024-10-31T02:24:22.164Z",
+									"updatedAt": "2024-10-31T02:24:22.164Z",
+									"__v": 0
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Coin"
+				]
+			},
+			"put": {
+				"operationId": "CoinController_updateCoin",
+				"parameters": [
+					{
+						"name": "id",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string",
+							"example": "6726670c435d4e8cd74622ba"
+						},
+						"description": "ID da moeda a ser atualizada"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCoinDto"
+							},
+							"example": {
+								"code": "EUR/",
+								"name": "Euro/Real Brasileiro"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Moeda atualizada com sucesso",
+						"content": {
+							"application/json": {
+								"example": {
+									"_id": "6726670c435d4e8cd74622ba",
+									"code": "EUR/",
+									"name": "Euro/Real Brasileiro",
+									"user": "67222ae202d81bb03c2f6014",
+									"createdAt": "2024-11-02T17:53:16.044Z",
+									"updatedAt": "2024-11-02T17:53:16.044Z",
+									"__v": 0
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Coin"
+				]
+			}
+		},
+		"/coins/user/{user}": {
+			"get": {
+				"operationId": "CoinController_getAllCoinsByUser",
+				"parameters": [
+					{
+						"name": "user",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string",
+							"example": "67240bb518bc7d05a496db07"
+						},
+						"description": "ID do usuário cujas moedas devem ser recuperadas"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de moedas associadas ao usuário",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CoinDto"
+									}
+								},
+								"example": [
+									{
+										"_id": "67263f0ec053f58bd2062469",
+										"code": "XRPBRL",
+										"name": "XRP/Real Brasileiro",
+										"user": "67240bb518bc7d05a496db07",
+										"createdAt": "2024-11-02T15:02:38.120Z",
+										"updatedAt": "2024-11-02T15:02:38.120Z",
+										"__v": 0
+									}
+								]
+							}
+						}
+					}
+				},
+				"tags": [
+					"Coin"
+				]
+			}
+		},
+		"/coins/user/email/{email}": {
+			"get": {
+				"operationId": "CoinController_getAllCoinsByUserEmail",
+				"parameters": [
+					{
+						"name": "email",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string",
+							"example": "teste3@teste.br"
+						},
+						"description": "E-mail do usuário cujas moedas devem ser recuperadas"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Lista de moedas associadas ao usuário identificado pelo e-mail",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/CoinDto"
+									}
+								},
+								"example": [
+									{
+										"_id": "67263f0ec053f58bd2062469",
+										"code": "XRPBRL",
+										"name": "XRP/Real Brasileiro",
+										"user": {
+											"_id": "67240bb518bc7d05a496db07",
+											"name": "Teste3",
+											"email": "teste3@teste.br",
+											"password": "$2a$10$XH5F1PaCNJqMjReGQ4WoqeBwe6ABmriMO7QzQmwEl9aarfjOn.ujm",
+											"createdAt": "2024-10-31T22:59:01.971Z",
+											"updatedAt": "2024-10-31T22:59:01.971Z",
+											"__v": 0
+										},
+										"createdAt": "2024-11-02T15:02:38.120Z",
+										"updatedAt": "2024-11-02T15:02:38.120Z",
+										"__v": 0
+									}
+								]
+							}
+						}
+					}
+				},
+				"tags": [
+					"Coin"
+				]
+			}
+		},
+		"/coins/{userId}/{code}": {
+			"delete": {
+				"operationId": "CoinController_deleteCoin",
+				"parameters": [
+					{
+						"name": "userId",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "code",
+						"required": true,
+						"in": "path",
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjIyYWUyMDJkODFiYjAzYzJmNjAxNCIsImlhdCI6MTczMDM0MTQ0NywiZXhwIjoxNzMwNjAwNjQ3fQ.5LWjzqVt0kNkdBhRgoCkMz0pgIjNufUcMCqeFwm9Luo"
+						},
+						"description": "Bearer token de autenticação do usuário"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Moeda deletada com sucesso.",
+						"content": {
+							"application/json": {
+								"example": {
+									"_id": "67263f0ec053f58bd2062469",
+									"code": "XRPBRL",
+									"name": "XRP/Real Brasileiro",
+									"user": "67240bb518bc7d05a496db07",
+									"createdAt": "2024-11-02T15:02:38.120Z",
+									"updatedAt": "2024-11-02T15:02:38.120Z",
+									"__v": 0
+								}
+							}
+						}
+					},
+					"tags": [
+						"Coin"
+					]
+				}
+			},
+			"/auth/signup": {
+				"post": {
+					"operationId": "AuthController_signUp",
+					"requestBody": {
+						"required": true,
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SignUpDto"
+								},
+								"example": {
+									"name": "Arthur9",
+									"email": "arthur9@teste.br",
+									"password": "123456"
+								}
+							}
+						}
+					},
+					"responses": {
+						"201": {
+							"description": "Usuário criado com sucesso, token de autenticação retornado.",
+							"content": {
+								"application/json": {
+									"example": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjY3NWJiNDM1ZDRlOGNkNzQ2MjJkZiIsImlhdCI6MTczMDU3Mzc1NSwiZXhwIjoxNzMwODMyOTU1fQ.Nc2eCcRTtm2zT6An1D8jv5n5W4b0ym4RdjCmZo-hU8o"
+									}
+								}
+							}
+						}
+					},
+					"tags": [
+						"Auth"
+					]
+				}
+			},
+			"/auth/login": {
+				"post": {
+					"operationId": "AuthController_login",
+					"requestBody": {
+						"required": true,
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/LoginDto"
+								},
+								"example": {
+									"email": "teste3@teste.br",
+									"password": "123456"
+								}
+							}
+						}
+					},
+					"responses": {
+						"201": {
+							"description": "Login bem-sucedido.",
+							"content": {
+								"application/json": {
+									"example": {
+										"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjQwYmI1MThiYzdkMDVhNDk2ZGIwNyIsImlhdCI6MTczMDU3Mjg3NCwiZXhwIjoxNzMwODMyMDc0fQ.9ot5ur1UfrjXozzdLiXd-2-4WyIfQQEcXXSK7YSBa08",
+										"userId": "67240bb518bc7d05a496db07",
+										"email": "teste3@teste.br",
+										"name": "Teste3"
+									}
+								}
+							}
+						}
+					},
+					"tags": [
+						"Auth"
+					]
+				}
+			}
+		},
+		"info": {
+			"title": "App cotas",
+			"description": "API para gerenciamento de cotas e moedas associadas a usuários, permitindo cadastro, consulta e atualização de moedas.",
+			"version": "1.0",
+			"contact": {
+				"name": "Arthur Dias",
+				"email": "arthur.dias@inatel.br"
+			}
+		},
+		"tags": [
+			{
+				"name": "coins",
+				"description": "Endpoints relacionados ao gerenciamento de moedas."
+			}
+		],
+		"servers": [],
+		"components": {
+			"schemas": {
+				"CreateCoinDto": {
+					"type": "object",
+					"properties": {
+						"code": {
+							"type": "string",
+							"description": "Código da moeda."
+						},
+						"name": {
+							"type": "string",
+							"description": "Nome da moeda."
+						}
+					},
+					"required": [
+						"code",
+						"name"
+					]
+				},
+				"UpdateCoinDto": {
+					"type": "object",
+					"properties": {
+						"code": {
+							"type": "string",
+							"description": "Código da moeda."
+						},
+						"name": {
+							"type": "string",
+							"description": "Nome da moeda."
+						}
+					}
+				},
+				"SignUpDto": {
+					"type": "object",
+					"properties": {
+						"name": {
+							"type": "string",
+							"description": "Nome do usuário."
+						},
+						"email": {
+							"type": "string",
+							"format": "email",
+							"description": "Email do usuário."
+						},
+						"password": {
+							"type": "string",
+							"description": "Senha do usuário."
+						}
+					},
+					"required": [
+						"name",
+						"email",
+						"password"
+					]
+				},
+				"LoginDto": {
+					"type": "object",
+					"properties": {
+						"email": {
+							"type": "string",
+							"format": "email",
+							"description": "Email do usuário para login."
+						},
+						"password": {
+							"type": "string",
+							"description": "Senha do usuário para login."
+						}
+					},
+					"required": [
+						"email",
+						"password"
+					]
+				}
+			}
+		}
+	}
+}

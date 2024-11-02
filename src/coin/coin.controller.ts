@@ -26,7 +26,7 @@ export class CoinController {
         return this.coinService.create(coin, req.user);
     }
 
-    @Get(':id') // pesquisa por id da moeda
+    @Get(':id')
     async getCoin(
         @Param('id')
         id:string,
@@ -34,7 +34,6 @@ export class CoinController {
         return this.coinService.findById(id);
     }
 
-    // Nova rota para buscar moedas pelo ID do usuário http://localhost:3000/coins/user/672277729b6127616b55252a
     @Get('user/:user')
     async getAllCoinsByUser(
         @Param('user') user: string
@@ -42,7 +41,6 @@ export class CoinController {
         return this.coinService.findAllByUser(user);
     }
 
-    //pesquisa por email http://localhost:3000/coins/user/email/arthur@teste.br
     @Get('user/email/:email')
     async getAllCoinsByUserEmail(
         @Param('email') email: string
@@ -60,23 +58,6 @@ export class CoinController {
         return this.coinService.updateById(id, coin);
     }
 
-    // @Delete(':id')
-    // async deleteCoin(
-    //     @Param('id')
-    //     id:string,
-    // ): Promise<Coin> {
-    //     return this.coinService.deleteById(id);
-    // }
-    
-    // @Delete(':id')
-    // @UseGuards(AuthGuard())
-    // async deleteCoin(
-    //     @Param('id') id: string,
-    //     @Req() req
-    // ): Promise<Coin> {
-    //     return this.coinService.deleteById(id, req.user);
-    // }
-
     @Delete(':userId/:code')
     @UseGuards(AuthGuard())
     async deleteCoin(
@@ -84,7 +65,6 @@ export class CoinController {
         @Param('code') code: string,
         @Req() req
     ): Promise<Coin> {
-        // Verifica se o ID do usuário logado corresponde ao ID passado
         if (req.user._id.toString() !== userId) {
             throw new UnauthorizedException('Você não tem permissão para deletar esta moeda.');
         }
