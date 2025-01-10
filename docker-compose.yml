@@ -1,0 +1,28 @@
+version: '3'
+services:
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-dev-web
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/api-dev-web
+      - /api-dev-web/node_modules
+    environment:
+      - DB_URI=mongodb://mongo:27017/api
+
+  mongo:
+    image: mongo:8
+    container_name: mongo-dev-web
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db # Persistir os dados do MongoDB
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
+
+volumes:
+  mongo-data: # Volume para persistência dos dados do MongoDB
